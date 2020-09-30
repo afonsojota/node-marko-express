@@ -36,6 +36,28 @@ class LivroDao{
         });
     }
 
+    atualiza(livro){
+        return new Promise((resolve, reject) => {
+            this._db.run(` UPDATE LIVROS
+                SET titulo = ?,
+                preco = ?,
+                descricao = ?
+             WHERE ID = ?`,
+            [
+                livro.titulo,
+                livro.preco,
+                livro.descricao,
+                livro.id
+            ],
+            (error, resultado) => {
+                if(error){
+                    return reject("Não foi possível atualizar livro");
+                }
+                return resolve(resultado);
+            })
+        });
+    }
+
     remove(id){
         return new Promise((resolve, reject) => {
             this._db.run(` DELETE FROM LIVROS 
@@ -44,6 +66,20 @@ class LivroDao{
             (error, resultado) => {
                 if(error){
                     return reject("Não foi possível deletar livro");
+                }
+                return resolve(resultado);
+            })
+        });
+    }
+
+    buscaPorId(id){
+        return new Promise((resolve, reject) => {
+            this._db.get(` SELECT * FROM LIVROS 
+                WHERE ID = ?`,
+            [id],
+            (error, resultado) => {
+                if(error){
+                    return reject("Não foi possível buscar livro");
                 }
                 return resolve(resultado);
             })

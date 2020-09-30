@@ -29,17 +29,24 @@ module.exports = (app) => {
 
     app.get('/livros/form', function(req,resp){
         resp.marko(
-            require('../views/livros/form/form.marko'),
-            {
-
-            }
-        )
+            require('../views/livros/form/form.marko'), {livro: {}});
     });
 
     app.post('/livros', function(req,resp){
         console.log(req.body);
 
         livroDao.adiciona(req.body)
+        .then(
+            resp.redirect('/livros')
+        )
+       .catch(error => console.log(error));
+
+    });
+
+    app.put('/livros', function(req,resp){
+        console.log(req.body);
+
+        livroDao.atualiza(req.body)
         .then(
             resp.redirect('/livros')
         )
@@ -56,6 +63,19 @@ module.exports = (app) => {
         )
        .catch(error => console.log(error));
 
+    });
+
+    app.get('/livros/form/:id', function(req, resp) {
+    
+        livroDao.buscaPorId(req.params.id)
+            .then(livro => 
+                resp.marko(
+                    require('../views/livros/form/form.marko'),
+                    { livro: livro }
+                )
+            )
+            .catch(erro => console.log(erro));
+    
     });
 
 }
